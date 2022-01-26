@@ -12,6 +12,9 @@ h1 {
 
 ul {
   margin: 25px auto;
+  height: 75vh;
+  overflow-y: scroll;
+  scroll-behavior: auto;
 }
 
 li {
@@ -22,11 +25,13 @@ li {
   padding: 3.5px 15px;
   margin: 5px;
   border-radius: 5px;
+  max-width: 80%;
 }
 
 p {
   display: inline-block;
   margin-right: 25px;
+  max-width: 80%;
 }
 
 small {
