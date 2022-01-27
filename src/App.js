@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { db } from './firebase';
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
 //collection è la raccolta di informazioni che ho nel database (db)
 //getDocs è l'utility che mi ritorna i dati della collection
-// import { Scrollbars } from 'react-custom-scrollbars';
 import './App.css';
 
 function App() {
   const [ messages, setMessages ] = useState([]);
   const [ text, setText ] = useState("");
-  const user = "User" + Math.floor(Math.random() * 100);  
+  const [ user, setUser ] = useState("User" + Math.floor(Math.random() * 100));  
   const time = new Date().toISOString();
 
   //VERSIONE REALTIME - ripete la callback ogni volta che la collection cambia
@@ -48,36 +47,58 @@ function App() {
     getData();
   }, []);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const newMessage = { user, text, time };
-    console.log(newMessage);
-    addDoc(collection(db, "messages"), newMessage);
-    setText("");
-  };
+  const handleSubmit = useCallback((event) => {
+      event.preventDefault();
+      const newMessage = { user, text, time };
+      console.log(newMessage);
+      addDoc(collection(db, "messages"), newMessage);
+      setText("");
+    }, [text, time, user]
+  );
 
   const sortedMessages = messages.sort(function(x, y){
     return  new Date(x.time) - new Date(y.time);
   })
 
+  const messageRef = useRef();
+
+  useEffect(() => {
+    if (messageRef.current) {
+      messageRef.current.scrollIntoView(
+        {
+          behavior: 'smooth',
+          block: 'end',
+          inline: 'nearest'
+        })
+    }
+  }, [handleSubmit]);
+
   return (
     <div className="App">
+
+      <label htmlFor="nameInput">Username:</label>
+      <input className="nameInput"
+        name="nameInput"
+        placeholder="Write your name"
+        type="text"
+        value={user}
+        onChange={(e) => setUser(e.target.value)}
+      />
+
       <h1>🔥 Fire Chat!</h1>
 
-      {/* <Scrollbars style={{ width: 500, height: 300 }}> */}
-        <ul>
-          { sortedMessages.map((message, index) => (
-            <li key={index}>
-              <h4>{message.user}</h4>
-              <p>{message.text}</p>
-              <small>{new Date(message.time).getHours()}:{(new Date(message.time).getMinutes()<10?'0':'') + new Date(message.time).getMinutes()}</small>
-            </li>
-          ))}
-        </ul>
-      {/* </Scrollbars> */}
+      <ul>
+        { sortedMessages.map((message, index) => (
+          <li ref={messageRef} key={index} className={user === message.user ? "currentUser" : ""}>
+            <h4>{message.user}</h4>
+            <p>{message.text}</p>
+            <small>{new Date(message.time).getHours()}:{(new Date(message.time).getMinutes()<10?'0':'') + new Date(message.time).getMinutes()}</small>
+          </li>
+        ))}
+      </ul>
 
       <form onSubmit={handleSubmit}>
-        <input
+        <input className="msgInput"
           placeholder="Write a message"
           type="text"
           value={text}
