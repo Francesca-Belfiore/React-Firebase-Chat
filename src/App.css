@@ -14,11 +14,15 @@ ul {
   margin: 25px auto;
   height: 75vh;
   overflow-y: scroll;
-  scroll-behavior: auto;
   display: flex;
   flex-direction: column;
-  scrollbar-width: none;
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+ul::-webkit-scrollbar {
+  display: none;
 }
 
 li {
@@ -45,6 +49,7 @@ p {
 
 small {
   font-size: 9px;
+  user-select: none;
 }
 
 .msgInput {
@@ -54,7 +59,7 @@ small {
   background-color: bisque;
   padding: 10px 20px;
   border-radius: 5px;
-  width: 300px;
+  width: 315px;
 }
 
 label {

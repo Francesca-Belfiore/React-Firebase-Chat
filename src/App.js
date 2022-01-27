@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { db } from './firebase';
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
-//collection è la raccolta di informazioni che ho nel database (db)
-//getDocs è l'utility che mi ritorna i dati della collection
 import './App.css';
 
 function App() {
@@ -24,25 +22,6 @@ function App() {
         });
         setMessages(currentMessages);
       });
-      // VERSIONE "STATICA" - legge 1 sola volta i dati
-      // const querySnapshot = await getDocs(collection(db, "messages"));
-      // console.log(querySnapshot);
-      // const currentMessages = querySnapshot.docs.map((doc) => {
-      //   const obj = {
-      //     id: doc.id,
-      //     ...doc.data(),
-      //   };
-      //   return obj;
-      // });
-      // console.log(currentMessages);
-      // setMessages(currentMessages);
-    
-    //firebase ritorna uno snapshot del database com'è in quel momento
-    //perché è un database di documenti, non un database strutturato
-
-    //il database non relazionale (no sql) sono disordinati ma concedono
-    //l'accesso diretto al dato senza transpiling di tutti i dati prima
-    //di esso che richiede tempo
     };
     getData();
   }, []);
